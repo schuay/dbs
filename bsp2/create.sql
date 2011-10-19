@@ -73,6 +73,7 @@ version_id int not null references dbo.version(id));
 
 create table dbo.purchases (
 id serial primary key,
+datum timestamp not null,
 user_id int not null references dbo.user(id),
 application_id int not null references dbo.application(id));
 alter table dbo.purchases add unique(user_id, application_id);

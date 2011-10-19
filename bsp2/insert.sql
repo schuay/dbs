@@ -120,8 +120,8 @@ select 2, 6 union select 2, 7 union select 3, 6;
 insert into dbo.downloads (datum, user_id, platform_id, version_id)
 select current_timestamp, 2, 3, 4 union select current_timestamp, 3, 2, 4 union select current_timestamp, 2, 4, 3;
 
-insert into dbo.purchases (user_id, application_id)
-select 2, 2 union select 3, 4 union select 5, 5;
+insert into dbo.purchases (datum, user_id, application_id)
+select current_timestamp, 2, 2 union select current_timestamp, 3, 4 union select current_timestamp, 5, 5;
 
 insert into dbo.version_platform (version_id, platform_id)
 select 2, 2 union select 3, 3 union select 4, 4;
