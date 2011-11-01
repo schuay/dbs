@@ -1,4 +1,4 @@
-﻿
+
 
 -- users
 insert into dbo.user (name, passwort, mail)

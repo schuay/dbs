@@ -1,4 +1,4 @@
-﻿drop table dbo.downloads;
+drop table dbo.downloads;
 drop table dbo.review;
 drop table dbo.purchases;
 drop table dbo.version_platform;

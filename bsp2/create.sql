@@ -1,4 +1,4 @@
-﻿create schema dbo;
+create schema dbo;
 
 create table dbo.user (
 name varchar(64) not null primary key,
