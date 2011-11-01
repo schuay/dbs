@@ -14,7 +14,7 @@ drop table dbo.advert;
 drop table dbo.developer;
 drop table dbo.user;
 
-alter table dbo.version drop constraint version_application_id_fkey;
+alter table dbo.version drop constraint version_application_name_fkey;
 
 drop table dbo.application;
 drop table dbo.version;
