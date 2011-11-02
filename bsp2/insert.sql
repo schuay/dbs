@@ -81,12 +81,21 @@ select 'title', 'text', 'jg012';
 
 -- {sub,}category
 
-insert into dbo.category (name, beschreibung)
-select 'category 1', 'cat' union select 'category 2', 'cat' union select 'category 3', 'cat' union select 'category 4', 'cat';
+insert into dbo.category (name)
+values ('category 1'),
+       ('category 2'),
+       ('category 3'),
+       ('category 4'),
+       ('subcategory 1'),
+       ('subcategory 2'),
+       ('subcategory 3'),
+       ('subcategory 4');
 
-insert into dbo.category (name, beschreibung)
-select 'subcategory 1', 'subcat' union select 'subcategory 2', 'subcat' union
-select 'subcategory 3', 'subcat' union select 'subcategory 4', 'subcat';
+insert into dbo.subcategory (name, beschreibung)
+values ('subcategory 1', 'cat1'),
+       ('subcategory 2', 'cat2'),
+       ('subcategory 3', 'cat3'),
+       ('subcategory 4', 'cat4');
 
 -- relations
 

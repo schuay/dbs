@@ -22,14 +22,16 @@ alter table dbo.version add primary key (application_name, vnr);
 alter table dbo.application add foreign key (name, recommended_version_vnr) 
 	references dbo.version(application_name, vnr) deferrable initially deferred;
 
---PK
 create table dbo.platform (
 name varchar(64) not null,
 vnr int not null);
 alter table dbo.platform add primary key (name, vnr); 
 
 create table dbo.category (
-name varchar(64) not null primary key,
+name varchar(64) not null primary key);
+
+create table dbo.subcategory (
+name varchar(64) not null primary key references dbo.category(name),
 beschreibung varchar(128) not null);
 
 create table dbo.category_relations (
@@ -48,7 +50,6 @@ alter table dbo.review add unique (user_name, application_name, version_vnr);
 alter table dbo.review add foreign key (application_name, version_vnr)
 references dbo.version (application_name, vnr);
 
---sequence
 create sequence dbo.advert_id_seq increment 10 start 100;
 create table dbo.advert (
 id int primary key DEFAULT nextval('dbo.advert_id_seq'),

@@ -5,6 +5,7 @@ drop table dbo.version_platform;
 drop table dbo.app_author;
 drop table dbo.app_category;
 drop table dbo.category_relations;
+drop table dbo.subcategory;
 drop table dbo.category;
 drop table dbo.ad_interested;
 drop table dbo.ad_application;
