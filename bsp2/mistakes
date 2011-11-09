@@ -1,0 +1,4 @@
+dloads -> table instead of relation (3. normalform - 2 schluessel in 1 tbl)
+subcat -> _at least_ 1 parent cat
+subcat - cat is 'is-a' relation instead of weak entity
+(... multiplicities?)
