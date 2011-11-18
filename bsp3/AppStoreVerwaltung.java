@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 
 public class AppStoreVerwaltung {
 	
@@ -5,7 +6,7 @@ public class AppStoreVerwaltung {
 	 * Die Methode dbConnect() soll eine JDBC-Verbindung zur
 	 * Datenbank herstellen und AUTOCOMMIT ausschalten.
 	 */
-	public void dbConnect() {
+	public void dbConnect() throws SQLException {
 		//TODO
 	}
 	
@@ -89,17 +90,14 @@ public class AppStoreVerwaltung {
 			ev.dbConnect();
 			ev.testAppStoreVerwaltung();
 			ev.dbDisconnect();
-		}
-		
-		catch(SQLException e) {
-			while(e != null){
+		} catch (SQLException e) {
+			while (e != null) {
 				System.err.println("Code: " + e.getErrorCode());
 				System.err.println("Message: " + e.getMessage());
 				System.err.println("State: " + e.getSQLState());
 				e = e.getNextException();
 			}
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
