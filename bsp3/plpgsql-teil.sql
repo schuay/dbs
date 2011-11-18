@@ -157,3 +157,5 @@ begin
 	delete from dbo.user a where a.name in (select name from temp_deletion_candidates);
 end;
 $$ language plpgsql;
+
+/* vim: set noet ts=4 sw=4: */

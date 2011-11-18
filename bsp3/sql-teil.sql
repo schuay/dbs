@@ -69,3 +69,5 @@ select a.name, a.downloads, b.purchases,
 from downloads a
 	inner join purchases b on a.name = b.name
 order by downloads;
+
+/* vim: set noet ts=4 sw=4: */
