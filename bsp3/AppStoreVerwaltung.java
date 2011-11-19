@@ -10,7 +10,7 @@ import org.postgresql.Driver;
 
 public class AppStoreVerwaltung {
 
-	private final static String schema = "dbo";
+	private final static String schema = "public";
 	
 	private Connection conn = null;
 	
@@ -55,9 +55,9 @@ public class AppStoreVerwaltung {
 		
 		final String query = String.format(
 			"select a.name, a.preis, f_erhoehter_preis(a.name) as adjusted_price, " + 
-			"	(select count(*) from dbo.downloads b where b.application_name = a.name) as downloads " +
-			"from %s.application a " +
-			"order by a.name;", schema);
+			"	(select count(*) from %s.download b where b.anwendung = a.name) as downloads " +
+			"from %s.anwendung a " +
+			"order by a.name;", schema, schema);
 		
 		try {
 			stmt = conn.createStatement();
@@ -118,16 +118,16 @@ public class AppStoreVerwaltung {
 		/* author count > 1, adjusted price != price */
 		final String query = String.format(
 			"select a.name, f_erhoehter_preis(a.name) " +
-			"from dbo.application a " +
-			"where (select count(*) from dbo.app_author b where b.application_name = a.name) > 1 " +
-			"	and f_erhoehter_preis(a.name) != preis;", schema);
+			"from %s.anwendung a " +
+			"where (select count(*) from %s.autor b where b.anwendung = a.name) > 1 " +
+			"	and f_erhoehter_preis(a.name) != preis;", schema, schema);
 
 		try {
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
 
 			final String s =
-					String.format("update %s.application set preis = ? where name = ?;", schema);
+					String.format("update %s.anwendung set preis = ? where name = ?;", schema);
 			pstmt = conn.prepareStatement(s);
 
 			while (rs.next()) {
@@ -167,7 +167,7 @@ public class AppStoreVerwaltung {
 		Statement stmt = null;
 		
 		final String query = String.format(
-				"delete from %s.downloads where datum < current_timestamp - interval '1 year'",
+				"delete from %s.download where datum < current_timestamp - interval '1 year'",
 				schema);
 		
 		try {
@@ -192,8 +192,8 @@ public class AppStoreVerwaltung {
 		ResultSet rs = null;
 		
 		final String query = String.format(
-				"select datum, user_name, application_name " +
-				"from %s.downloads;", schema);
+				"select datum, benutzer, anwendung " +
+				"from %s.download;", schema);
 		
 		try {
 			stmt = conn.createStatement();
@@ -246,21 +246,21 @@ public class AppStoreVerwaltung {
 	 */
 	public void testAppStoreVerwaltung() throws Exception {
 		System.out.printf("%n------------%ninitial state%n------------%n%n");
-		System.out.printf("downloads (datum, user, application)%n");
+		System.out.printf("download (datum, benutzer, anwendung)%n");
 		printState();
 		System.out.printf("%napplications (name, current price, adjusted price, dl count)%n");
 		druckeAnwendungen();
 		
 		erhoehePreise();
 		System.out.printf("%n------------%nafter erhoehePreise()%n------------%n%n");
-		System.out.printf("downloads (datum, user, application)%n");
+		System.out.printf("download (datum, benutzer, anwendung)%n");
 		printState();
 		System.out.printf("%napplications (name, current price, adjusted price, dl count)%n");
 		druckeAnwendungen();
 		
 		entferneDownloads();
 		System.out.printf("%n------------%nafter entferneDownloads()%n------------%n%n");
-		System.out.printf("downloads (datum, user, application)%n");
+		System.out.printf("download (datum, benutzer, anwendung)%n");
 		printState();
 		System.out.printf("%napplications (name, current price, adjusted price, dl count)%n");
 		druckeAnwendungen();

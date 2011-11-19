@@ -2,17 +2,17 @@
 Geben Sie die Namen ALLER Anwendungen aus, die jeweilige Gesamtanzahl der Downloads von allen Versionen der Anwendung zusammen genommen, sowie dem Umsatz durch die Käufe der jeweiligen Anwendung. Sortieren Sie die Ausgabe absteigend nach der Anzahl der Downloads. */
 
 with downloads as (
-	select application_name, count(*) as downloads
-	from dbo.downloads
-	group by application_name),
+	select anwendung, count(*) as downloads
+	from public.download
+	group by anwendung),
 purchases as (
-	select application_name, count(*) as purchases
-	from dbo.purchases
-	group by application_name)
+	select anwendung, count(*) as purchases
+	from public.gekauft
+	group by anwendung)
 select a.name, coalesce(b.downloads, 0) as downloads, coalesce(c.purchases, 0) * a.preis as revenue
-from dbo.application a
-	left outer join downloads b on a.name = b.application_name
-	left outer join purchases c on a.name = c.application_name
+from public.anwendung a
+	left outer join downloads b on a.name = b.anwendung
+	left outer join purchases c on a.name = c.anwendung
 order by 2 desc;
 
 /* 2
@@ -20,10 +20,10 @@ Geben Sie die Namen jener Anwendungen aus, für die die Anzahl der Autoren mit e
 
 with counts as (
 	select c.name, count(*) as com_authors
-	from dbo.developer a
-		inner join dbo.app_author b on a.name = b.developer_name
-		inner join dbo.application c on b.application_name = c.name
-		inner join dbo.user d on a.name = d.name
+	from public.entwickler a
+		inner join public.autor b on a.name = b.entwickler
+		inner join public.anwendung c on b.anwendung = c.name
+		inner join public.benutzer d on a.name = d.name
 	where substring(d.mail from '.{4}$') = '.com'
 	group by c.name)
 select name, com_authors
@@ -35,9 +35,9 @@ Geben Sie die Liste aller Anwendungsnamen aus, zusammen mit dem Namen irgendeine
 
 
 select c.name, max(a.name) as author
-from dbo.developer a
-	right outer join dbo.app_author b on a.name = b.developer_name
-	right outer join dbo.application c on b.application_name = c.name
+from public.entwickler a
+	right outer join public.autor b on a.name = b.entwickler
+	right outer join public.anwendung c on b.anwendung = c.name
 group by c.name;
 
 /* 4
@@ -55,17 +55,17 @@ Schreiben Sie Befehle zum Erzeugen und Löschen einer View ("benutzer_statistik_
 Sortieren Sie das Ergebnis nach der Anzahl der heruntergeladenen Anwendungen.  */
 
 with downloads as (
-	select a.name, count(distinct b.application_name) as downloads
-	from dbo.user a
-		left outer join dbo.downloads b on a.name = b.user_name
+	select a.name, count(distinct b.anwendung) as downloads
+	from public.benutzer a
+		left outer join public.download b on a.name = b.benutzer
 	group by a.name),
 purchases as (
-	select a.name, count(distinct b.application_name) as purchases
-	from dbo.user a
-		left outer join dbo.purchases b on a.name = b.user_name
+	select a.name, count(distinct b.anwendung) as purchases
+	from public.benutzer a
+		left outer join public.gekauft b on a.name = b.benutzer
 	group by a.name)
 select a.name, a.downloads, b.purchases,
-	case a.downloads when 0 then 0 else b.purchases / a.downloads end as ratio
+	case a.downloads when 0 then 0 else cast(b.purchases as numeric) / a.downloads end as ratio
 from downloads a
 	inner join purchases b on a.name = b.name
 order by downloads;

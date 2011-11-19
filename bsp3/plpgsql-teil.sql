@@ -2,31 +2,29 @@
 Schreiben Sie einen Trigger, der vor dem Eintragen in die Tabelle "Download" überprüft, ob der Download überhaupt stattfinden darf. Ein Download darf genau dann stattfinden, wenn die Anwendung gratis ist, oder wenn der Benutzer die Anwendung gekauft hat (und zwar vor dem Download). Das Eintragen soll außerdem fehlschlagen, wenn die Version der Plattform, für die die Anwendung heruntergeladen wird, gar nicht von der jeweiligen Version der Anwendung unterstützt wird. Im Fall eines Fehlschlags wegen eines nicht vorher erfolgten Kaufs soll die Exception "nicht berechtigt" geworfen werden; falls die Plattform nicht unterstützt wird, "nicht unterstuetzt".
  */
 
-drop function download_check()
-
-create function download_check() returns trigger as $download_check$
+create or replace function download_check() returns trigger as $download_check$
 declare 
 	app_price numeric; -- the price of the app
 	purchased int; -- 1 if the app has been purchased by user, else 0
 	supported int; -- 1 if selected app version supports selected platform, else 0
 begin
 	select into app_price preis
-	from dbo.application
-	where name = new.application_name;
+	from public.anwendung
+	where name = new.anwendung;
 
 	purchased := (
 		select count(*)
-		from dbo.purchases
-		where user_name = new.user_name
-			and application_name = new.application_name);
+		from public.gekauft
+		where benutzer = new.benutzer
+			and anwendung = new.anwendung);
 
 	supported := (
 		select count(*)
-		from dbo.version_platform
-		where application_name = new.application_name
-			and version_vnr = new.version_vnr
-			and platform_name = new.platform_name
-			and platform_vnr = new.platform_vnr);
+		from public.unterstuetzt
+		where anwendung = new.anwendung
+			and vnr = new.vnr
+			and plattform_name = new.plattform_name
+			and plattform_vnr = new.plattform_vnr);
 
 	if app_price > 0 and purchased = 0 then
 		raise exception 'nicht berechtigt';
@@ -40,7 +38,7 @@ begin
 end;
 $download_check$ language plpgsql;
 
-create trigger download_check before insert on dbo.downloads
+create trigger download_check before insert on public.download
 	for each row execute procedure download_check();
  
 /* 7
@@ -56,26 +54,25 @@ Schreiben Sie eine Prozedur f_erhoehter_preis mit einem Anwendungsnamen als Para
 Wenn die Anwendung nicht bewertet wurde, soll ihr unveränderter Preis zurückgegeben werden.
  */
 
-/* TODO change datatype musterloesung */
-create or replace function f_erhoehter_preis(app_name varchar(64)) returns numeric as $f_erhoehter_preis$
+create or replace function f_erhoehter_preis(app_name varchar(50)) returns numeric as $f_erhoehter_preis$
 declare
 	adjusted_price numeric;
 	current_price numeric;
 	avg_rating integer;
 begin
-	if (select count(*) from dbo.application where name = app_name) = 0 then
+	if (select count(*) from public.anwendung where name = app_name) = 0 then
 		raise exception 'application % does not exist', app_name;
 	end if;
 
 	current_price := (
 		select preis
-		from dbo.application
+		from public.anwendung
 		where name = app_name);
 
 	avg_rating := (
 		select cast(avg(punkte) as int)
-		from dbo.review
-		where application_name = app_name);
+		from public.bewertung
+		where anwendung = app_name);
 
 	adjusted_price := (
 		case avg_rating
@@ -102,8 +99,8 @@ declare
 	current_price numeric;
 	adjusted_price numeric;
 begin
-	open curs for select name, preis from dbo.application a
-		where (select count(*) from dbo.app_author b where b.application_name = a.name) > 1;
+	open curs for select name, preis from public.anwendung a
+		where (select count(*) from public.autor b where b.anwendung = a.name) > 1;
 	fetch curs into rowvar;
 	while found loop
 		current_price := rowvar.preis;
@@ -112,7 +109,7 @@ begin
 		if current_price != adjusted_price then
 			raise notice '%: % -> %', rowvar.name, current_price, adjusted_price;
 
-			update dbo.application
+			update public.anwendung
 			set preis = adjusted_price
 			where name = rowvar.name;
 		end if;
@@ -134,15 +131,15 @@ declare
 	rowvar record;
 	one_year_ago timestamp := current_timestamp - interval '1 year';
 begin
-	create temporary table temp_deletion_candidates (name varchar(64) not null);
+	create temporary table temp_deletion_candidates (name varchar(50) not null);
 
 	/* users without purchases, with no dloads younger than 1 year and who aren't devs */
 	insert into temp_deletion_candidates(name)
 	select a.name
-	from dbo.users a
-	where (select count(*) from dbo.purchases b where b.user_name = a.name) = 0
-		and one_year_ago > (select max(c.datum) from dbo.downloads c where c.user_name = a.name)
-		and a.name not in (select name from dbo.developers);
+	from public.benutzer a
+	where (select count(*) from public.gekauft b where b.benutzer = a.name) = 0
+		and one_year_ago > (select max(c.datum) from public.download c where c.benutzer = a.name)
+		and a.name not in (select name from public.entwickler);
 
 	open curs for select name from temp_deletion_candidates;
 	fetch curs into rowvar;
@@ -152,9 +149,9 @@ begin
 	end loop;
 	close curs;
 
-	delete from dbo.reviews a where a.user_name in (select name from temp_deletion_candidates);
-	delete from dbo.downloads a where a.user_name in (select name from temp_deletion_candidates);
-	delete from dbo.user a where a.name in (select name from temp_deletion_candidates);
+	delete from public.bewertungs a where a.benutzer in (select name from temp_deletion_candidates);
+	delete from public.download a where a.benutzer in (select name from temp_deletion_candidates);
+	delete from public.benutzer a where a.name in (select name from temp_deletion_candidates);
 end;
 $$ language plpgsql;
 
