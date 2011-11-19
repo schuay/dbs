@@ -43,7 +43,13 @@ group by c.name;
 /* 4
 Wählen Sie per Hand eine Kategorie aus, die mindestens einer anderen Kategorie untergeordnet ist. Schreiben Sie eine Anfrage, die diese Kategorie ausgibt, sowie rekursiv alle übergeordneten Kategorien. Geben Sie für jede Kategorie den Namen und die Beschreibung aus. Wenn eine Kategorie keine Beschreibung besitzt, weil sie auf der obersten Ebene der Hierarchie liegt, geben Sie "keine Beschreibung" aus. (Beachten Sie, dass dazu möglicherweise Typumwandlungen notwendig sind.) Passen Sie die Tupel in Ihrer Datenbank so an, dass es zu der von Ihnen ausgewählten Kategorie mindestens zwei Ebenen übergeordneter Kategorien gibt. Achten Sie darauf, dass Ihre Daten keinen Zyklus enthalten und dass Ihre Anfrage allgemein formuliert ist (d. h. für beliebige Datenbankausprägungen funktioniert). */
 
-/* TODO (musterloesung) */
+with recursive cats as (
+	select cast('Quizspiele' as text) as name
+	union
+	select a.kategorie
+	from public.untergeordnet a inner join cats b on a.unterkategorie = b.name)
+select a.name, coalesce(b.beschreibung, 'keine Beschreibung') as beschreibung
+from cats a left outer join public.unterkategorie b on a.name = b.name;
 
 /* 5
 Schreiben Sie Befehle zum Erzeugen und Löschen einer View ("benutzer_statistik_view"), welche für JEDEN Benutzer ("name")
