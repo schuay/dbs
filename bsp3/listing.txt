@@ -1,0 +1,259 @@
+DROP SEQUENCE
+DROP SEQUENCE
+DROP SEQUENCE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+ALTER TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP FUNCTION
+DROP FUNCTION
+DROP FUNCTION
+DROP FUNCTION
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+ALTER TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE SEQUENCE
+CREATE SEQUENCE
+CREATE SEQUENCE
+INSERT 0 5
+INSERT 0 3
+BEGIN
+INSERT 0 4
+INSERT 0 5
+COMMIT
+INSERT 0 6
+INSERT 0 5
+INSERT 0 3
+INSERT 0 6
+INSERT 0 4
+INSERT 0 6
+INSERT 0 4
+INSERT 0 3
+INSERT 0 3
+INSERT 0 3
+INSERT 0 5
+INSERT 0 3
+INSERT 0 4
+INSERT 0 3
+    name     | downloads | revenue 
+-------------+-----------+---------
+ Anwendung 1 |         4 |    0.00
+ Anwendung 2 |         1 |    2.97
+ Anwendung 4 |         1 |    1.00
+ Anwendung 3 |         0 |    0.00
+(4 rows)
+
+    name     | com_authors 
+-------------+-------------
+ Anwendung 2 |           1
+ Anwendung 4 |           1
+ Anwendung 1 |           1
+(3 rows)
+
+    name     |   author   
+-------------+------------
+ Anwendung 3 | Benutzer 1
+ Anwendung 1 | Benutzer 2
+ Anwendung 4 | Benutzer 2
+ Anwendung 2 | Benutzer 2
+(4 rows)
+
+    name    |              beschreibung              
+------------+----------------------------------------
+ Quizspiele | Spiele, die Allgemeinwissen vermitteln
+ Lernspiele | Spiele als Ergänzung des Unterrichts
+ Spiele     | keine Beschreibung
+ Bildung    | keine Beschreibung
+(4 rows)
+
+    name    | downloads | purchases |         ratio          
+------------+-----------+-----------+------------------------
+ Benutzer 4 |         0 |         1 |                      0
+ Benutzer 1 |         1 |         0 | 0.00000000000000000000
+ Benutzer 3 |         1 |         1 | 1.00000000000000000000
+ Benutzer 5 |         1 |         1 | 1.00000000000000000000
+ Benutzer 2 |         2 |         1 | 0.50000000000000000000
+(5 rows)
+
+CREATE FUNCTION
+CREATE TRIGGER
+CREATE FUNCTION
+CREATE FUNCTION
+CREATE FUNCTION
+ id |        datum        |  benutzer  | plattform_name | plattform_vnr |  anwendung  | vnr 
+----+---------------------+------------+----------------+---------------+-------------+-----
+  1 | 2011-09-02 00:00:00 | Benutzer 1 | Plattform 1    |             1 | Anwendung 1 |   1
+  2 | 2011-09-02 00:00:00 | Benutzer 2 | Plattform 1    |             1 | Anwendung 1 |   1
+  3 | 2011-09-02 00:00:00 | Benutzer 1 | Plattform 1    |             1 | Anwendung 1 |   2
+  4 | 2011-09-02 00:00:00 | Benutzer 3 | Plattform 1    |             1 | Anwendung 1 |   2
+  5 | 2011-09-02 00:00:00 | Benutzer 2 | Plattform 2    |             1 | Anwendung 2 |   1
+  6 | 2000-01-01 00:00:00 | Benutzer 5 | Plattform 1    |             1 | Anwendung 4 |   1
+(6 rows)
+
+    name     | preis |       beschreibung       | empfohlen 
+-------------+-------+--------------------------+-----------
+ Anwendung 1 |  0.00 | Beschreibung Anwendung 1 |         1
+ Anwendung 2 |  0.99 | Beschreibung Anwendung 2 |         1
+ Anwendung 3 | 10.00 | Beschreibung Anwendung 3 |         1
+ Anwendung 4 |  1.00 | Beschreibung Anwendung 4 |         1
+(4 rows)
+
+    name    | passwort |      mail      
+------------+----------+----------------
+ Benutzer 1 | abc      | b1@example.org
+ Benutzer 2 | def      | b2@example.com
+ Benutzer 3 | ghi      | b3@example.com
+ Benutzer 4 | jkl      | b4@example.com
+ Benutzer 5 | mno      | b5@example.com
+(5 rows)
+
+    name    |      beschreibung      
+------------+------------------------
+ Benutzer 1 | Ganz toller Entwickler
+ Benutzer 2 | DBS-Profi
+ Benutzer 5 | Inaktiver Benutzer
+(3 rows)
+
+  benutzer  |  anwendung  |        datum        
+------------+-------------+---------------------
+ Benutzer 2 | Anwendung 2 | 2011-09-01 00:00:00
+ Benutzer 3 | Anwendung 2 | 2011-09-01 00:00:00
+ Benutzer 4 | Anwendung 2 | 2011-09-01 00:00:00
+ Benutzer 5 | Anwendung 4 | 1900-01-01 00:00:00
+(4 rows)
+
+    name     | vnr 
+-------------+-----
+ Plattform 1 |   1
+ Plattform 1 |   2
+ Plattform 2 |   1
+(3 rows)
+
+  anwendung  | vnr | plattform_name | plattform_vnr 
+-------------+-----+----------------+---------------
+ Anwendung 1 |   1 | Plattform 1    |             1
+ Anwendung 1 |   2 | Plattform 1    |             1
+ Anwendung 1 |   2 | Plattform 1    |             2
+ Anwendung 2 |   1 | Plattform 2    |             1
+ Anwendung 3 |   1 | Plattform 1    |             1
+ Anwendung 4 |   1 | Plattform 1    |             1
+(6 rows)
+
+INSERT 0 1
+INSERT 0 1
+    name     |       punkte       | preis | f_erhoehter_preis |          case          
+-------------+--------------------+-------+-------------------+------------------------
+ Anwendung 1 | 4.5000000000000000 |  0.00 |            0.0000 |                      0
+ Anwendung 2 | 2.5000000000000000 |  0.99 |            1.0890 |     1.1000000000000000
+ Anwendung 3 |                    | 10.00 |             10.00 | 1.00000000000000000000
+ Anwendung 4 | 5.0000000000000000 |  1.00 |            1.3000 | 1.30000000000000000000
+(4 rows)
+
+INSERT 0 4
+INSERT 0 2
+    name     |         punkte         | preis | f_erhoehter_preis |          case          
+-------------+------------------------+-------+-------------------+------------------------
+ Anwendung 1 |     4.5000000000000000 |  0.00 |            0.0000 |                      0
+ Anwendung 2 |     3.1666666666666667 |  0.99 |            1.1385 |     1.1500000000000000
+ Anwendung 3 | 0.00000000000000000000 | 10.00 |             10.00 | 1.00000000000000000000
+ Anwendung 4 |     4.0000000000000000 |  1.00 |            1.2000 | 1.20000000000000000000
+(4 rows)
+
+INSERT 0 1
+    name     |       punkte       | preis | f_erhoehter_preis |          case          
+-------------+--------------------+-------+-------------------+------------------------
+ Anwendung 1 | 4.5000000000000000 |  0.00 |            0.0000 |                      0
+ Anwendung 2 | 3.1666666666666667 |  0.99 |            1.1385 |     1.1500000000000000
+ Anwendung 3 | 1.5000000000000000 | 10.00 |           10.5000 | 1.05000000000000000000
+ Anwendung 4 | 4.0000000000000000 |  1.00 |            1.2000 | 1.20000000000000000000
+(4 rows)
+
+INSERT 0 1
+    name     | preis 
+-------------+-------
+ Anwendung 1 |  0.00
+ Anwendung 2 |  0.99
+ Anwendung 4 |  1.00
+(3 rows)
+
+ f_anwendungen_verteuern 
+-------------------------
+ 
+(1 row)
+
+ name 
+------
+(0 rows)
+
+ f_benutzer_loeschen 
+---------------------
+                   0
+(1 row)
+
+DELETE 1
+DELETE 1
+DELETE 2
+DELETE 1
+DELETE 1
+ f_benutzer_loeschen 
+---------------------
+                   2
+(1 row)
+
+DROP SEQUENCE
+DROP SEQUENCE
+DROP SEQUENCE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+ALTER TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP TABLE
+DROP FUNCTION
+DROP FUNCTION
+DROP FUNCTION
+DROP FUNCTION
