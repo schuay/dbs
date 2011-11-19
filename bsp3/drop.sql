@@ -21,3 +21,8 @@ DROP TABLE Version;
 DROP TABLE Anwendung;
 DROP TABLE Entwickler;
 DROP TABLE Benutzer;
+
+drop function download_check();
+drop function f_anwendungen_verteuern();
+drop function f_benutzer_loeschen();
+drop function f_erhoehter_preis(app_name character varying);
