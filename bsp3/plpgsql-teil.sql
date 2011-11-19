@@ -16,7 +16,8 @@ begin
 		select count(*)
 		from public.gekauft
 		where benutzer = new.benutzer
-			and anwendung = new.anwendung);
+			and anwendung = new.anwendung
+			and datum < current_timestamp);
 
 	supported := (
 		select count(*)
@@ -58,7 +59,7 @@ create or replace function f_erhoehter_preis(app_name varchar(50)) returns numer
 declare
 	adjusted_price numeric;
 	current_price numeric;
-	avg_rating integer;
+	avg_rating numeric;
 begin
 	if (select count(*) from public.anwendung where name = app_name) = 0 then
 		raise exception 'application % does not exist', app_name;
@@ -70,18 +71,18 @@ begin
 		where name = app_name);
 
 	avg_rating := (
-		select cast(avg(punkte) as int)
+		select coalesce(avg(punkte), 0)
 		from public.bewertung
 		where anwendung = app_name);
 
 	adjusted_price := (
-		case avg_rating
-		when 0 then current_price
-		when 1 then current_price * 1.05
-		when 2 then current_price * 1.10
-		when 3 then current_price * 1.15
-		when 4 then current_price * 1.20
-		when 5 then current_price * 1.30
+		case
+		when avg_rating < 1 then current_price
+		when avg_rating < 2 then current_price * 1.05
+		when avg_rating < 3 then current_price * 1.10
+		when avg_rating < 4 then current_price * 1.15
+		when avg_rating < 5 then current_price * 1.20
+		else current_price * 1.30
 		end);
 
 	return adjusted_price;
@@ -130,6 +131,7 @@ declare
 	curs refcursor;
 	rowvar record;
 	one_year_ago timestamp := current_timestamp - interval '1 year';
+	rowcount int;
 begin
 	create temporary table temp_deletion_candidates (name varchar(50) not null);
 
@@ -138,7 +140,7 @@ begin
 	select a.name
 	from public.benutzer a
 	where (select count(*) from public.gekauft b where b.benutzer = a.name) = 0
-		and one_year_ago > (select max(c.datum) from public.download c where c.benutzer = a.name)
+		and one_year_ago > (select coalesce(max(c.datum), '1900-01-01') from public.download c where c.benutzer = a.name)
 		and a.name not in (select name from public.entwickler);
 
 	open curs for select name from temp_deletion_candidates;
@@ -149,9 +151,14 @@ begin
 	end loop;
 	close curs;
 
-	delete from public.bewertungs a where a.benutzer in (select name from temp_deletion_candidates);
+	delete from public.bewertung a where a.rezensent in (select name from temp_deletion_candidates);
 	delete from public.download a where a.benutzer in (select name from temp_deletion_candidates);
 	delete from public.benutzer a where a.name in (select name from temp_deletion_candidates);
+
+	rowcount := (select count(*) from temp_deletion_candidates);
+	drop table temp_deletion_candidates;
+
+	return rowcount;
 end;
 $$ language plpgsql;
 
