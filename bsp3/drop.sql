@@ -2,6 +2,8 @@ DROP SEQUENCE seq_inserat;
 DROP SEQUENCE seq_download;
 DROP SEQUENCE seq_bewertung;
 
+drop view public.benutzer_statistik_view;
+
 DROP TABLE AnwendungInserat;
 DROP TABLE interessiert;
 DROP TABLE unterstuetzt;

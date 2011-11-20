@@ -60,6 +60,7 @@ Schreiben Sie Befehle zum Erzeugen und Löschen einer View ("benutzer_statistik_
 
 Sortieren Sie das Ergebnis nach der Anzahl der heruntergeladenen Anwendungen.  */
 
+create or replace view public.benutzer_statistik_view as
 with downloads as (
 	select a.name, count(distinct b.anwendung) as downloads
 	from public.benutzer a
